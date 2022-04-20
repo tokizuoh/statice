@@ -1,0 +1,22 @@
+version: '3'
+
+env:
+  SERVICE_NAME: statice
+
+tasks:
+  build:
+    cmds:
+      - docker-compose up --build -d
+  rbuild:
+    cmds:
+      - task stop
+      - task build
+  stop:
+    cmds:
+      - docker stop $SERVICE_NAME-server
+  s-e:
+    cmds:
+      - docker exec -it $SERVICE_NAME-server sh
+  s-r:
+    cmds:
+      - docker-compose exec app go run main.go

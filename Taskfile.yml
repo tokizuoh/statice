@@ -14,9 +14,16 @@ tasks:
   stop:
     cmds:
       - docker stop $SERVICE_NAME-server
+      - docker stop $SERVICE_NAME-front
   es:
     cmds:
       - docker exec -it $SERVICE_NAME-server sh
   rs:
     cmds:
       - docker-compose exec server go run main.go
+  ef:
+    cmds:
+      - docker exec -it $SERVICE_NAME-front sh
+  rf:
+    cmds:
+      - docker-compose exec front go run main.go

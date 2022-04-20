@@ -1,15 +1,5 @@
 version: '3.8'
 services:
-  # front:
-  #   build:
-  #     context: ./front
-  #     dockerfile: Dockerfile
-  #   container_name: statice-front
-  #   tty: true
-  #   ports:
-  #     - 8081:8081
-  #   volumes:
-  #     - ./front:/go/src
   server:
     build:
       context: ./server
@@ -20,3 +10,13 @@ services:
       - 8080:8080
     volumes:
       - ./server:/go/src
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: statice-front
+    tty: true
+    ports:
+      - 8081:8081  # TODO: 8081使って大丈夫？
+    volumes:
+      - ./front:/go/src

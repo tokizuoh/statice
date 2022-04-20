@@ -10,6 +10,7 @@ func main() {
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
 			statusCode := http.StatusMethodNotAllowed
 			http.Error(w, http.StatusText(statusCode), statusCode)
+			return
 		}
 		fmt.Fprintln(w, "Hello, World")
 	})

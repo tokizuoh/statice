@@ -5,6 +5,18 @@
         <title>LOGIN PAGE</title>
     </head>
     <body>
-        <!-- TODO: IDとパスワードを受け付ける -->
+        <form action="http://localhost:8080/login" method="post">
+            <div>
+                <label for="id">Enter your ID:</label>
+                <input type="text" name="id" required>
+            </div>
+            <div>
+                <label for="password">Enter your password:</label>
+                <input type="password" name="password" required>
+            </div>
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
     </body>
 </html>

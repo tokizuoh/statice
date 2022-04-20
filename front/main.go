@@ -1,7 +1,23 @@
 package main
 
-import "log"
+import (
+	"fmt"
+	"html/template"
+	"net/http"
+)
 
 func main() {
-	log.Println(1)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		t, err := template.ParseFiles("login.html")
+		if err != nil {
+			fmt.Fprintf(w, err.Error(), nil)
+			return
+		}
+
+		if err := t.Execute(w, nil); err != nil {
+			fmt.Fprintf(w, err.Error(), nil)
+			return
+		}
+	})
+	http.ListenAndServe(":8081", nil)
 }

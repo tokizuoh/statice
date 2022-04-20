@@ -17,10 +17,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 		if len(mapSessionID[cookie.Value]) > 0 {
 			http.Redirect(w, r, "/home", http.StatusPermanentRedirect)
 			return
-		} else {
-			statusCode := http.StatusBadRequest
-			http.Error(w, http.StatusText(statusCode), statusCode)
-			return
 		}
 	}
 
@@ -36,7 +32,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func validLogin(w http.ResponseWriter, r *http.Request) {
+func validateLogin(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		statusCode := http.StatusMethodNotAllowed
 		http.Error(w, http.StatusText(statusCode), statusCode)
@@ -69,7 +65,13 @@ func validLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
-	// TODO: 直接 /home にリクエストできてしまうので解決する
+	_, err := r.Cookie("session_id")
+	if err != nil {
+		statusCode := http.StatusUnauthorized
+		http.Error(w, http.StatusText(statusCode), statusCode)
+		return
+	}
+
 	t, err := template.ParseFiles("template/home.html")
 	if err != nil {
 		fmt.Fprintf(w, err.Error(), nil)
@@ -84,7 +86,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/login", login)
-	http.HandleFunc("/validLogin", validLogin)
+	http.HandleFunc("/validateLogin", validateLogin)
 	http.HandleFunc("/home", home)
 	http.ListenAndServe(":8081", nil)
 }

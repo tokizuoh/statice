@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
+var mapSessionID = map[string]string{}
+
 func login(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("templatelogin.html")
+	// TODO: CookieにSessionID入ってたら /home にリダイレクト
+	t, err := template.ParseFiles("template/login.html")
 	if err != nil {
 		fmt.Fprintf(w, err.Error(), nil)
 		return
@@ -41,7 +46,13 @@ func validLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: セッションID発行してCookieに入れて送る
+	sessionID := uuid.NewString()
+	mapSessionID[id] = sessionID
+	cookie := http.Cookie{
+		Name:  "session_id",
+		Value: sessionID,
+	}
+	http.SetCookie(w, &cookie)
 	http.Redirect(w, r, "/home", http.StatusMovedPermanently)
 }
 

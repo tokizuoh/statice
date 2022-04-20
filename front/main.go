@@ -7,7 +7,7 @@ import (
 )
 
 func login(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("login.html")
+	t, err := template.ParseFiles("templatelogin.html")
 	if err != nil {
 		fmt.Fprintf(w, err.Error(), nil)
 		return
@@ -48,7 +48,7 @@ func validLogin(w http.ResponseWriter, r *http.Request) {
 
 func home(w http.ResponseWriter, r *http.Request) {
 	// TODO: 直接 /home にリクエストできてしまうので解決する
-	t, err := template.ParseFiles("home.html")
+	t, err := template.ParseFiles("template/home.html")
 	if err != nil {
 		fmt.Fprintf(w, err.Error(), nil)
 		return

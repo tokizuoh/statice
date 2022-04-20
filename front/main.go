@@ -8,10 +8,22 @@ import (
 	"github.com/google/uuid"
 )
 
+// key: sessionID, value: id (user)
 var mapSessionID = map[string]string{}
 
 func login(w http.ResponseWriter, r *http.Request) {
-	// TODO: CookieにSessionID入ってたら /home にリダイレクト
+	cookie, err := r.Cookie("session_id")
+	if err == nil {
+		if len(mapSessionID[cookie.Value]) > 0 {
+			http.Redirect(w, r, "/home", http.StatusPermanentRedirect)
+			return
+		} else {
+			statusCode := http.StatusBadRequest
+			http.Error(w, http.StatusText(statusCode), statusCode)
+			return
+		}
+	}
+
 	t, err := template.ParseFiles("template/login.html")
 	if err != nil {
 		fmt.Fprintf(w, err.Error(), nil)
@@ -47,7 +59,7 @@ func validLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionID := uuid.NewString()
-	mapSessionID[id] = sessionID
+	mapSessionID[sessionID] = id
 	cookie := http.Cookie{
 		Name:  "session_id",
 		Value: sessionID,

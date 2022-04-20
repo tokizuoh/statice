@@ -26,9 +26,9 @@ Task: https://taskfile.dev/#/installation
 ![](./docs/login.png)
 
 ### 3. Enter ID and password
-If you submit the correct ID and path, a SessionID will be generated and redirected to `/home`.  
+If you submit the correct ID and password, a SessionID will be generated and redirected to `/home`. SessionID is stored in a cookie.  
 
 - ID: `test-id`
 - password: `test-password`
 
-Even if you transition to `/login` after login, if sessionID is present in the cookie, you will be redirected to `/home.`  
+Even if you transition to `/login` after login, if SessionID is present in the cookie, you will be redirected to `/home.`  

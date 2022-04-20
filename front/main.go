@@ -20,7 +20,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func validLogin(w http.ResponseWriter, r *http.Request) {
-	// TODO: HEADリクエストは受け付ける必要ある？
 	if r.Method != http.MethodPost {
 		statusCode := http.StatusMethodNotAllowed
 		http.Error(w, http.StatusText(statusCode), statusCode)

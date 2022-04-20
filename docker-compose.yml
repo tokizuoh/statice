@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  # front:
+  #   build:
+  #     context: ./front
+  #     dockerfile: Dockerfile
+  #   container_name: statice-front
+  #   tty: true
+  #   ports:
+  #     - 8081:8081
+  #   volumes:
+  #     - ./front:/go/src
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: statice-server
+    tty: true
+    ports:
+      - 8080:8080
+    volumes:
+      - ./server:/go/src

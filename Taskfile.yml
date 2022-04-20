@@ -14,9 +14,9 @@ tasks:
   stop:
     cmds:
       - docker stop $SERVICE_NAME-server
-  s-e:
+  es:
     cmds:
       - docker exec -it $SERVICE_NAME-server sh
-  s-r:
+  rs:
     cmds:
-      - docker-compose exec app go run main.go
+      - docker-compose exec server go run main.go

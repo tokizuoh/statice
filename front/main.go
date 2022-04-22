@@ -109,7 +109,7 @@ func init() {
 	ctx = context.Background()
 	rdb = redis.NewClient(&redis.Options{
 		Addr:     "redis:6379",
-		Password: "",
+		Password: "", // TODO: .env で管理する
 		DB:       0,
 	})
 }

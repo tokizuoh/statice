@@ -10,3 +10,10 @@ services:
       - 8081:8081  # TODO: 8081使って大丈夫？
     volumes:
       - ./front:/go/src
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    container_name: statice-redis
+    ports:
+      - 6379:6379

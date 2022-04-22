@@ -1,34 +1,50 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 )
 
-// key: sessionID, value: id (user)
-var mapSessionID = map[string]string{}
+var ctx context.Context
+var rdb *redis.Client
 
 func login(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_id")
-	if err == nil {
-		if len(mapSessionID[cookie.Value]) > 0 {
-			http.Redirect(w, r, "/home", http.StatusPermanentRedirect)
+	if err != nil {
+		// クッキーにセッションIDが含まれてないと判断
+		t, err := template.ParseFiles("template/login.html")
+		if err != nil {
+			fmt.Fprintf(w, err.Error(), nil)
 			return
 		}
-	}
 
-	t, err := template.ParseFiles("template/login.html")
-	if err != nil {
-		fmt.Fprintf(w, err.Error(), nil)
-		return
-	}
+		if err := t.Execute(w, nil); err != nil {
+			fmt.Fprintf(w, err.Error(), nil)
+			return
+		}
+	} else {
+		_, err := rdb.Get(ctx, cookie.Value).Result()
+		if err != nil {
+			log.Println(err.Error())
+			t, err := template.ParseFiles("template/login.html")
+			if err != nil {
+				fmt.Fprintf(w, err.Error(), nil)
+				return
+			}
 
-	if err := t.Execute(w, nil); err != nil {
-		fmt.Fprintf(w, err.Error(), nil)
-		return
+			if err := t.Execute(w, nil); err != nil {
+				fmt.Fprintf(w, err.Error(), nil)
+				return
+			}
+			return
+		}
+		http.Redirect(w, r, "/home", http.StatusPermanentRedirect)
 	}
 }
 
@@ -55,7 +71,12 @@ func validateLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionID := uuid.NewString()
-	mapSessionID[sessionID] = id
+	if err := rdb.Set(ctx, sessionID, id, 0).Err(); err != nil {
+		log.Println(err.Error())
+		statusCode := http.StatusFound
+		http.Error(w, http.StatusText(statusCode), statusCode)
+		return
+	}
 	cookie := http.Cookie{
 		Name:  "session_id",
 		Value: sessionID,
@@ -82,6 +103,15 @@ func home(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, err.Error(), nil)
 		return
 	}
+}
+
+func init() {
+	ctx = context.Background()
+	rdb = redis.NewClient(&redis.Options{
+		Addr:     "redis:6379",
+		Password: "",
+		DB:       0,
+	})
 }
 
 func main() {
